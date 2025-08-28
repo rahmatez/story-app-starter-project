@@ -227,7 +227,7 @@ Aplikasi dirancang mobile-first dengan breakpoints:
 
 ## 👨‍💻 Developer
 
-Dikembangkan oleh **Story App Team** menggunakan best practices modern web development.
+Dikembangkan oleh **rahmatez** menggunakan best practices modern web development.
 
 ---
 
