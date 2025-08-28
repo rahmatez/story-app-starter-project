@@ -1,8 +1,9 @@
 // Import our custom CSS
 import '../sass/main.scss';
 
-// Import data
-import storyData from '../data/storyapp.json';
+// Import API services
+import { StoryService, AuthService } from './api/story-api.js';
+import { ApiErrorHandler } from './utils/api-error-handler.js';
 
 // Import components
 import './components/app-navigation.js';
@@ -11,6 +12,8 @@ import './components/story-card.js';
 import './components/add-story-form.js';
 import './components/loading-spinner.js';
 import './components/about-page.js';
+import './components/login-page.js';
+import './components/register-page.js';
 
 // Import utilities
 import { localeManager } from './locales/locale-manager.js';
@@ -20,11 +23,15 @@ class StoryApp {
     this.stories = [];
     this.currentPage = 'dashboard';
     this.isLoading = false;
+    this.isAuthenticated = AuthService.isAuthenticated();
     
     this.init();
   }
 
   async init() {
+    // Check authentication status
+    this.checkAuthenticationStatus();
+    
     // Load initial data
     await this.loadStories();
     
@@ -35,9 +42,30 @@ class StoryApp {
     this.setupLocalization();
     
     // Show initial page
-    this.showPage('dashboard');
+    this.showPage(this.isAuthenticated ? 'dashboard' : 'dashboard');
     
     console.log('Story App initialized successfully!');
+  }
+
+  checkAuthenticationStatus() {
+    this.isAuthenticated = AuthService.isAuthenticated();
+    
+    // Listen for authentication events
+    window.addEventListener('login-success', () => {
+      this.isAuthenticated = true;
+      this.loadStories(); // Reload stories after login
+    });
+    
+    window.addEventListener('logout', () => {
+      this.isAuthenticated = false;
+      this.stories = []; // Clear stories on logout
+      this.renderStories();
+    });
+    
+    window.addEventListener('auth-failed', () => {
+      this.isAuthenticated = false;
+      this.showPage('login');
+    });
   }
 
   async loadStories() {
@@ -45,19 +73,45 @@ class StoryApp {
     this.showLoading(true);
     
     try {
-      // Simulate API loading delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Load stories from JSON data
-      this.stories = storyData.listStory || [];
+      if (this.isAuthenticated) {
+        // Load stories from API when authenticated
+        const response = await StoryService.getAllStories({
+          page: 1,
+          size: 10,
+          location: 0
+        });
+        
+        if (response.error === false) {
+          this.stories = response.listStory || [];
+        } else {
+          throw new Error(response.message || 'Failed to load stories');
+        }
+      } else {
+        // Load dummy data when not authenticated (for demo purposes)
+        const dummyStories = await this.loadDummyData();
+        this.stories = dummyStories;
+      }
       
       this.renderStories();
     } catch (error) {
       console.error('Error loading stories:', error);
+      ApiErrorHandler.showErrorToUser(error);
       this.showError();
     } finally {
       this.isLoading = false;
       this.showLoading(false);
+    }
+  }
+
+  async loadDummyData() {
+    // Fallback to dummy data for non-authenticated users or API errors
+    try {
+      const response = await fetch('./src/data/storyapp.json');
+      const data = await response.json();
+      return data.listStory || [];
+    } catch (error) {
+      console.warn('Could not load dummy data:', error);
+      return [];
     }
   }
 
@@ -70,24 +124,49 @@ class StoryApp {
 
     // Add story form events
     const addStoryForm = document.getElementById('add-story-form');
-    addStoryForm.addEventListener('story-added', (event) => {
-      this.addNewStory(event.detail.story);
-    });
+    if (addStoryForm) {
+      addStoryForm.addEventListener('story-added', async (event) => {
+        await this.addNewStory(event.detail.story);
+      });
 
-    addStoryForm.addEventListener('form-cancel', () => {
-      this.showPage('dashboard');
-    });
+      addStoryForm.addEventListener('form-cancel', () => {
+        this.showPage('dashboard');
+      });
+    }
 
     // Floating add button
     const floatingAddBtn = document.getElementById('floating-add-btn');
-    floatingAddBtn.addEventListener('click', () => {
-      this.showPage('add-story');
-    });
+    if (floatingAddBtn) {
+      floatingAddBtn.addEventListener('click', () => {
+        if (this.isAuthenticated) {
+          this.showPage('add-story');
+        } else {
+          ApiErrorHandler.showErrorToUser({
+            message: 'Please login to add a story',
+            status: 401
+          });
+          this.showPage('login');
+        }
+      });
+    }
 
     // Add first story button
     const addFirstStoryBtn = document.getElementById('add-first-story-btn');
-    addFirstStoryBtn.addEventListener('click', () => {
-      this.showPage('add-story');
+    if (addFirstStoryBtn) {
+      addFirstStoryBtn.addEventListener('click', () => {
+        if (this.isAuthenticated) {
+          this.showPage('add-story');
+        } else {
+          this.showPage('login');
+        }
+      });
+    }
+
+    // Authentication navigation events
+    document.addEventListener('navigate', (event) => {
+      if (event.detail?.page) {
+        this.showPage(event.detail.page);
+      }
     });
 
     // Locale change events
@@ -161,8 +240,13 @@ class StoryApp {
       
       // Update navigation
       const navigation = document.getElementById('navigation');
-      navigation.currentPage = pageName;
+      if (navigation) {
+        navigation.currentPage = pageName;
+      }
     }
+    
+    // Scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   showLoading(show) {
@@ -203,18 +287,40 @@ class StoryApp {
     noStories.style.display = 'none';
   }
 
-  addNewStory(newStory) {
-    // Add to beginning of stories array
-    this.stories.unshift(newStory);
-    
-    // Re-render stories
-    this.renderStories();
-    
-    // Navigate back to dashboard
-    this.showPage('dashboard');
-    
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  async addNewStory(formData) {
+    if (!this.isAuthenticated) {
+      ApiErrorHandler.showErrorToUser({
+        message: 'Please login to add a story',
+        status: 401
+      });
+      this.showPage('login');
+      return;
+    }
+
+    try {
+      // Show loading
+      this.showLoading(true);
+      
+      // Send story to API
+      const response = await StoryService.addStory(formData);
+      
+      if (response.error === false) {
+        ApiErrorHandler.showSuccessMessage('Story added successfully!');
+        
+        // Reload stories to get the latest data
+        await this.loadStories();
+        
+        // Navigate back to dashboard
+        this.showPage('dashboard');
+      } else {
+        throw new Error(response.message || 'Failed to add story');
+      }
+    } catch (error) {
+      console.error('Error adding story:', error);
+      ApiErrorHandler.showErrorToUser(error);
+    } finally {
+      this.showLoading(false);
+    }
   }
 
   showError() {

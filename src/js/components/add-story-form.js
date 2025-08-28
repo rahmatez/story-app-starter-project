@@ -1,5 +1,7 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { localeManager } from '../locales/locale-manager.js';
+import { StoryService, AuthService } from '../api/story-api.js';
+import { ApiErrorHandler } from '../utils/api-error-handler.js';
 
 export class AddStoryForm extends LitElement {
   // Disable shadow DOM to use Bootstrap styling
@@ -79,7 +81,20 @@ export class AddStoryForm extends LitElement {
       this._showFeedback('photo-feedback', msg('form-photo-required'), 'invalid');
       isValid = false;
     } else {
-      this._showFeedback('photo-feedback', '', 'valid');
+      const file = photo.files[0];
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        this._showFeedback('photo-feedback', 'Please select a valid image file', 'invalid');
+        isValid = false;
+      }
+      // Check file size (max 1MB as per API documentation)
+      else if (file.size > 1024 * 1024) {
+        this._showFeedback('photo-feedback', 'Image size must be less than 1MB', 'invalid');
+        isValid = false;
+      } else {
+        this._showFeedback('photo-feedback', '', 'valid');
+      }
     }
 
     return isValid;
@@ -101,62 +116,81 @@ export class AddStoryForm extends LitElement {
       return;
     }
 
+    // Check authentication
+    if (!AuthService.isAuthenticated()) {
+      ApiErrorHandler.showErrorToUser({
+        message: 'Please login to add a story',
+        status: 401
+      });
+      return;
+    }
+
     this.isSubmitting = true;
     
-    const description = this.querySelector('#description').value;
+    const description = this.querySelector('#description').value.trim();
     const photo = this.querySelector('#photo').files[0];
 
-    // Simulate API call
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create FormData for multipart/form-data request
+      const formData = new FormData();
+      formData.append('description', description);
+      formData.append('photo', photo);
       
-      // Convert photo to Data URL (base64) for stable storage
-      const photoDataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(photo);
-      });
-      
-      // Create new story object
-      const newStory = {
-        id: `story-${Date.now()}`,
-        name: 'You', // In real app, this would be the logged-in user
-        description: description,
-        photoUrl: photoDataUrl,
-        createdAt: new Date().toISOString()
-      };
+      // Optional: Add location data if geolocation is available
+      if (navigator.geolocation) {
+        try {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              timeout: 5000,
+              enableHighAccuracy: false
+            });
+          });
+          
+          formData.append('lat', position.coords.latitude);
+          formData.append('lon', position.coords.longitude);
+        } catch (locationError) {
+          console.warn('Could not get location:', locationError);
+          // Continue without location data
+        }
+      }
 
-      // Dispatch custom event with new story
-      this.dispatchEvent(new CustomEvent('story-added', {
-        detail: { story: newStory },
-        bubbles: true,
-        composed: true
-      }));
-
-      // Show success message
-      this._showSuccessMessage();
+      // Send story to API using Axios
+      const response = await StoryService.addStory(formData);
       
-      // Reset form
-      this._resetForm();
+      if (response.error === false) {
+        // Show success message
+        ApiErrorHandler.showSuccessMessage('Story added successfully!');
+        
+        // Dispatch custom event with form data
+        this.dispatchEvent(new CustomEvent('story-added', {
+          detail: { story: formData },
+          bubbles: true,
+          composed: true
+        }));
+        
+        // Reset form
+        this._resetForm();
+        
+      } else {
+        throw new Error(response.message || 'Failed to add story');
+      }
       
     } catch (error) {
       console.error('Error adding story:', error);
-      this._showErrorMessage();
+      ApiErrorHandler.showErrorToUser(error);
     } finally {
       this.isSubmitting = false;
     }
   }
 
   _showSuccessMessage() {
-    const msg = (key) => localeManager.getMessage(key);
-    // You could implement a toast/notification system here
-    alert(this.locale === 'id' ? 'Cerita berhasil ditambahkan!' : 'Story added successfully!');
+    // Success message is now handled by ApiErrorHandler.showSuccessMessage()
+    // This method is kept for backward compatibility
   }
 
   _showErrorMessage() {
-    const msg = (key) => localeManager.getMessage(key);
-    alert(this.locale === 'id' ? 'Gagal menambahkan cerita. Silakan coba lagi.' : 'Failed to add story. Please try again.');
+    // Error message is now handled by ApiErrorHandler.showErrorToUser()
+    // This method is kept for backward compatibility
   }
 
   _resetForm() {

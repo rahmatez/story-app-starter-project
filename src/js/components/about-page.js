@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { localeManager } from '../locales/locale-manager.js';
 
 export class AboutPage extends LitElement {

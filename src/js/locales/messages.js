@@ -21,7 +21,10 @@ export const messages = {
     'form-photo-required': 'Foto wajib dipilih',
     'select-photo': 'Pilih foto untuk cerita Anda',
     'drag-drop-hint': 'Atau seret dan lepas file di sini',
-    'back-to-dashboard': 'Kembali ke Beranda'
+    'back-to-dashboard': 'Kembali ke Beranda',
+    'login': 'Masuk',
+    'register': 'Daftar',
+    'logout': 'Keluar'
   },
   'en': {
     'app-title': 'Story App',
@@ -44,6 +47,9 @@ export const messages = {
     'form-photo-required': 'Photo is required',
     'select-photo': 'Select a photo for your story',
     'drag-drop-hint': 'Or drag and drop files here',
-    'back-to-dashboard': 'Back to Dashboard'
+    'back-to-dashboard': 'Back to Dashboard',
+    'login': 'Login',
+    'register': 'Register',
+    'logout': 'Logout'
   }
 };

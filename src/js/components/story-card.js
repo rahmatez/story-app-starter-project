@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 import { DateFormatter } from '../utils/date-formatter.js';
 import { localeManager } from '../locales/locale-manager.js';
 
@@ -57,7 +57,6 @@ export class StoryCard extends LitElement {
   render() {
     if (!this.story.id) return html``;
 
-    const msg = (key) => localeManager.getMessage(key);
     const formattedDate = DateFormatter.formatToReadable(this.story.createdAt, this.locale);
     const relativeTime = DateFormatter.getRelativeTime(this.story.createdAt, this.locale);
 

@@ -1,15 +1,25 @@
-# Story App
+# Story App - Submission Kedua
 
-Story App adalah aplikasi web berbagi cerita yang dibangun menggunakan teknologi modern seperti **Lit Web Components**, **Bootstrap 5**, dan **Sass**. Aplikasi ini memungkinkan pengguna untuk melihat dan menambahkan cerita dengan foto.
+Aplikasi Story App yang dikembangkan menggunakan Lit Web Components, Bootstrap 5, Sass, dan Webpack dengan integrasi Story API untuk fitur-fitur dinamis.
 
-## 🎯 Fitur Utama
+## 🚀 Fitur Utama
 
-- **Dashboard Cerita**: Menampilkan daftar cerita dari pengguna dalam format card yang menarik
-- **Tambah Cerita**: Form untuk menambahkan cerita baru dengan validasi Bootstrap
-- **Halaman About**: Informasi tentang aplikasi dan developer
-- **Multi-bahasa**: Mendukung Bahasa Indonesia dan English
-- **Responsive Design**: Tampilan yang optimal di semua perangkat
-- **Date Formatting**: Menampilkan tanggal dalam format yang mudah dibaca
+### ✅ Kriteria Wajib
+- **Lit Web Components**: Custom components dengan Shadow DOM
+- **Bootstrap 5**: Responsive UI framework
+- **Sass**: CSS preprocessing untuk styling modular
+- **Webpack**: Module bundler dengan hot reload
+- **Story API Integration**: CRUD operations untuk stories
+- **Authentication**: Login/Register dengan JWT
+- **Axios HTTP Client**: Instance dengan interceptors
+- **Loading Indicators**: Bootstrap spinners dan custom components
+
+### ✅ Fitur Tambahan (Saran)
+- **Password Validation**: Minimum 8 karakter dengan real-time feedback
+- **Show/Hide Password**: Toggle visibility dengan ikon mata
+- **Error Handling**: Comprehensive error display dan user feedback
+- **ESLint + Prettier**: Code linting dan formatting
+- **Axios Instance**: Centralized HTTP client configuration
 
 ## 🛠 Teknologi yang Digunakan
 

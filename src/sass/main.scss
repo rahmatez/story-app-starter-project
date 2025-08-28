@@ -24,6 +24,22 @@
 @import 'pages/dashboard';
 @import 'pages/add-story';
 
+// Auth pages special styling
+.page {
+  position: relative;
+}
+
+// Hide navigation and footer when auth pages are active
+body:has(#login-page[style*="display: block"]),
+body:has(#register-page[style*="display: block"]) {
+  overflow: hidden;
+  
+  header,
+  footer {
+    display: none !important;
+  }
+}
+
 // Global styles
 * {
   box-sizing: border-box;
