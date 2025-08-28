@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <title><%= htmlWebpackPlugin.options.title %> | Story App</title>
+
+    <!-- Meta tags for SEO and social sharing -->
+    <meta name="description" content="Story App - Share your precious moments and connect with others through stories">
+    <meta name="keywords" content="stories, social media, sharing, photos, community">
+    <meta name="author" content="Story App Team">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Story App - Share Your Stories">
+    <meta property="og:description" content="A platform to share your precious moments and connect with others">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Story App - Share Your Stories">
+    <meta name="twitter:description" content="A platform to share your precious moments and connect with others">
+  </head>
+  <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+
+    <header>
+      <app-navigation id="navigation"></app-navigation>
+    </header>
+
+    <main id="main-content" class="main-content">
+      <!-- Dashboard Page -->
+      <div id="dashboard-page" class="page dashboard-page">
+        <div class="container">
+          <div class="page-header">
+            <h1 id="dashboard-title">Welcome to Story App</h1>
+            <p id="dashboard-subtitle">Share your precious moments with the world</p>
+          </div>
+          
+          <div class="stories-container">
+            <loading-spinner id="loading-spinner"></loading-spinner>
+            <div id="stories-grid" class="stories-grid" style="display: none;"></div>
+            <div id="no-stories" class="no-stories" style="display: none;">
+              <i class="fas fa-book-open"></i>
+              <h3 id="no-stories-title">No stories yet</h3>
+              <p id="no-stories-description">Be the first to share your story!</p>
+              <button class="btn btn-modern-gradient" id="add-first-story-btn">
+                <i class="fas fa-plus me-2"></i>
+                <span id="add-first-story-text">Add First Story</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating Add Button -->
+        <button class="floating-add-btn" id="floating-add-btn" title="Add Story">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+
+      <!-- Add Story Page -->
+      <div id="add-story-page" class="page add-story-page" style="display: none;">
+        <div class="container">
+          <div class="page-header">
+            <h1 id="add-story-title">Add New Story</h1>
+            <p id="add-story-subtitle">Share something interesting with the community</p>
+          </div>
+          
+          <add-story-form id="add-story-form"></add-story-form>
+        </div>
+      </div>
+
+      <!-- About Page -->
+      <div id="about-page" class="page" style="display: none;">
+        <about-page id="about-content"></about-page>
+      </div>
+    </main>
+
+    <footer>
+      <app-footer id="footer"></app-footer>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

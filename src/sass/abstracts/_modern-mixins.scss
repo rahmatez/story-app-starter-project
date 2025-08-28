@@ -1,0 +1,36 @@
+// Modern mixins using @use directive
+@use 'modern-variables' as modern;
+
+// Modern button with @use variables
+@mixin modern-gradient-button {
+  background: linear-gradient(45deg, modern.$modern-gradient-primary, modern.$modern-gradient-secondary);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  transition: all modern.$animation-duration modern.$animation-easing;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, modern.$modern-accent, modern.$modern-gradient-primary);
+    transition: left modern.$animation-duration modern.$animation-easing;
+    z-index: -1;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(modern.$modern-gradient-primary, 0.3);
+    
+    &::before {
+      left: 0;
+    }
+  }
+}

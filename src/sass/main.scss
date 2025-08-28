@@ -1,0 +1,130 @@
+// Import abstracts first
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
+
+// Import Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Import Font Awesome for icons
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+
+// Import layout
+@import 'layout/header';
+@import 'layout/footer';
+
+// Import components
+@import 'components/story-card';
+@import 'components/add-story-form';
+@import 'components/modern-button';  // Using @use directive
+
+// Import pages
+@import 'pages/dashboard';
+@import 'pages/add-story';
+
+// Global styles
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: $font-family;
+  background-color: $bg-color;
+  color: $text-color;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Header styling
+header {
+  flex-shrink: 0;
+}
+
+// Main content styling
+main.main-content {
+  flex: 1;
+  min-height: calc(100vh - 120px);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// Footer styling
+footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+// Page styling
+.page {
+  flex: 1;
+  min-height: 100%;
+  
+  &.dashboard-page {
+    padding: 2rem 0;
+  }
+}
+
+.container-fluid {
+  flex: 1;
+}
+
+// Utility classes
+.text-gradient {
+  @include gradient(135deg, $primary-color, $secondary-color);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.btn-gradient {
+  @include gradient(135deg, $primary-color, $secondary-color);
+  border: none;
+  color: white;
+  
+  &:hover {
+    @include gradient(135deg, darken($primary-color, 10%), darken($secondary-color, 10%));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($primary-color, 0.3);
+  }
+}
+
+// Loading animation
+.loading {
+  @include flex-center;
+  padding: $spacing-2xl;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba($primary-color, 0.3);
+    border-top: 3px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Fade in animation
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

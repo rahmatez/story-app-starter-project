@@ -1,0 +1,10 @@
+// Modern Sass module using @use (Dart Sass feature)
+// This file demonstrates the use of @use directive as required by submission
+
+$modern-gradient-primary: #667eea;
+$modern-gradient-secondary: #764ba2;
+$modern-accent: #f093fb;
+
+// Animation variables
+$animation-duration: 0.3s;
+$animation-easing: cubic-bezier(0.4, 0, 0.2, 1);

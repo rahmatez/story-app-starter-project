@@ -1,0 +1,117 @@
+@import '../abstracts/variables';
+@import '../abstracts/mixins';
+
+.story-card {
+  @include card($spacing-lg);
+  margin-bottom: $spacing-xl;
+  overflow: hidden;
+  border: 1px solid $border-color;
+
+  .card-header {
+    @include flex-between;
+    padding: $spacing-lg $spacing-lg $spacing-md;
+    border-bottom: 1px solid $border-color;
+
+    .user-info {
+      @include flex-center;
+      gap: $spacing-md;
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, $primary-color, $secondary-color);
+        @include flex-center;
+        color: white;
+        font-weight: $font-weight-bold;
+        font-size: $font-size-sm;
+      }
+
+      .user-details {
+        .username {
+          font-weight: $font-weight-semibold;
+          color: $text-color;
+          margin: 0;
+          font-size: $font-size-base;
+        }
+
+        .date {
+          color: rgba($text-color, 0.6);
+          font-size: $font-size-sm;
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .card-image {
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      transition: transform $transition-slow;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+
+  .card-body {
+    padding: $spacing-lg;
+
+    .description {
+      color: $text-color;
+      line-height: 1.6;
+      margin-bottom: $spacing-md;
+    }
+
+    .card-actions {
+      @include flex-between;
+      margin-top: $spacing-lg;
+      padding-top: $spacing-md;
+      border-top: 1px solid $border-color;
+
+      .action-buttons {
+        display: flex;
+        gap: $spacing-md;
+
+        .btn {
+          @include button-variant(transparent, $text-color, transparent);
+          padding: $spacing-xs $spacing-sm;
+          font-size: $font-size-sm;
+          border-radius: $border-radius-sm;
+
+          &:hover {
+            background-color: rgba($primary-color, 0.1);
+            color: $primary-color;
+          }
+
+          i {
+            margin-right: $spacing-xs;
+          }
+        }
+      }
+    }
+  }
+
+  // Responsive design
+  @include mobile {
+    margin-bottom: $spacing-lg;
+
+    .card-image img {
+      height: 250px;
+    }
+
+    .card-header {
+      padding: $spacing-md;
+    }
+
+    .card-body {
+      padding: $spacing-md;
+    }
+  }
+}

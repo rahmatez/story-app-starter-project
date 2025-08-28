@@ -1,0 +1,90 @@
+// Button mixin
+@mixin button-variant($bg-color, $text-color: white, $border-color: $bg-color) {
+  background-color: $bg-color;
+  color: $text-color;
+  border: 1px solid $border-color;
+  padding: $spacing-sm $spacing-lg;
+  border-radius: $border-radius-md;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  display: inline-block;
+  transition: all $transition-fast;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($bg-color, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba($bg-color, 0.25);
+  }
+}
+
+// Card mixin
+@mixin card($padding: $spacing-lg) {
+  background-color: $card-bg;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 6px -1px $shadow-color, 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: $padding;
+  transition: box-shadow $transition-normal;
+
+  &:hover {
+    box-shadow: 0 10px 15px -3px $shadow-color, 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Flexbox mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Responsive breakpoints
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$breakpoint-md}) and (max-width: #{$breakpoint-lg - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$breakpoint-lg}) {
+    @content;
+  }
+}
+
+// Text truncate
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Gradient mixin
+@mixin gradient($direction: to right, $color-stops...) {
+  background: linear-gradient($direction, $color-stops);
+}

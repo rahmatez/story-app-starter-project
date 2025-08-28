@@ -1,0 +1,167 @@
+@import '../abstracts/variables';
+@import '../abstracts/mixins';
+
+.add-story-form {
+  @include card($spacing-2xl);
+  max-width: 600px;
+  margin: 0 auto;
+
+  .form-header {
+    text-align: center;
+    margin-bottom: $spacing-2xl;
+
+    h2 {
+      color: $text-color;
+      font-weight: $font-weight-bold;
+      margin-bottom: $spacing-sm;
+    }
+
+    p {
+      color: rgba($text-color, 0.6);
+    }
+  }
+
+  .form-group {
+    margin-bottom: $spacing-xl;
+
+    label {
+      display: block;
+      font-weight: $font-weight-medium;
+      color: $text-color;
+      margin-bottom: $spacing-sm;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: $spacing-md;
+      border: 2px solid $border-color;
+      border-radius: $border-radius-md;
+      font-size: $font-size-base;
+      transition: border-color $transition-fast;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+      }
+
+      &.is-invalid {
+        border-color: #dc3545;
+      }
+
+      &.is-valid {
+        border-color: #198754;
+      }
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+
+      input[type="file"] {
+        opacity: 0;
+        position: absolute;
+        z-index: -1;
+      }
+
+      .file-upload-label {
+        @include flex-center;
+        @include flex-column;
+        padding: $spacing-2xl;
+        border: 2px dashed $border-color;
+        border-radius: $border-radius-md;
+        cursor: pointer;
+        transition: all $transition-fast;
+        text-align: center;
+
+        &:hover {
+          border-color: $primary-color;
+          background-color: rgba($primary-color, 0.05);
+        }
+
+        i {
+          font-size: 2rem;
+          color: $primary-color;
+          margin-bottom: $spacing-md;
+        }
+
+        .upload-text {
+          color: $text-color;
+          font-weight: $font-weight-medium;
+          margin-bottom: $spacing-xs;
+        }
+
+        .upload-hint {
+          color: rgba($text-color, 0.6);
+          font-size: $font-size-sm;
+        }
+      }
+
+      &.has-file .file-upload-label {
+        border-color: #198754;
+        background-color: rgba(#198754, 0.05);
+
+        i {
+          color: #198754;
+        }
+      }
+    }
+
+    .invalid-feedback,
+    .valid-feedback {
+      display: block;
+      margin-top: $spacing-xs;
+      font-size: $font-size-sm;
+    }
+
+    .invalid-feedback {
+      color: #dc3545;
+    }
+
+    .valid-feedback {
+      color: #198754;
+    }
+  }
+
+  .form-actions {
+    @include flex-between;
+    margin-top: $spacing-2xl;
+    gap: $spacing-md;
+
+    .btn {
+      padding: $spacing-md $spacing-xl;
+      font-weight: $font-weight-medium;
+      border-radius: $border-radius-md;
+      transition: all $transition-fast;
+
+      &.btn-primary {
+        @include button-variant($primary-color);
+        flex: 1;
+      }
+
+      &.btn-secondary {
+        @include button-variant($bg-color, $text-color, $border-color);
+      }
+    }
+  }
+
+  // Responsive design
+  @include mobile {
+    padding: $spacing-lg;
+    margin: $spacing-md;
+
+    .form-actions {
+      @include flex-column;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}

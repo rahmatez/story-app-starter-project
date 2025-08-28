@@ -1,0 +1,18 @@
+// Demonstrating @use directive usage (required for submission)
+@use '../abstracts/modern-mixins' as modern-mix;
+
+// Special enhanced button using @use
+.btn-modern-gradient {
+  @include modern-mix.modern-gradient-button;
+  
+  // Additional enhancements
+  &.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+  }
+}
